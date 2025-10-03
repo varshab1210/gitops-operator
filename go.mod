@@ -3,7 +3,7 @@ module github.com/redhat-developer/gitops-operator
 go 1.24.4
 
 require (
-	github.com/argoproj-labs/argo-rollouts-manager v0.0.6-0.20250930165405-32bff720ee88
+	github.com/argoproj-labs/argo-rollouts-manager v0.0.7-0.20250903192705-c01a15fc02bd
 	github.com/argoproj-labs/argocd-operator v0.14.2-0.20251001162831-84267e373f2e
 	github.com/go-logr/logr v1.4.2
 	github.com/google/go-cmp v0.6.0
@@ -71,7 +71,7 @@ require (
 	golang.org/x/crypto v0.37.0 // indirect
 	golang.org/x/exp v0.0.0-20241108190413-2d47ceb2692f // indirect
 	golang.org/x/net v0.39.0 // indirect
-	golang.org/x/oauth2 v0.24.0 // indirect
+	golang.org/x/oauth2 v0.27.0 // indirect
 	golang.org/x/sys v0.32.0 // indirect
 	golang.org/x/term v0.31.0 // indirect
 	golang.org/x/text v0.24.0 // indirect

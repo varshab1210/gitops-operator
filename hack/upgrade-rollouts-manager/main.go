@@ -23,14 +23,14 @@ const (
 	// - PRs will not be opened
 	// - Git commits will not be pushed to fork
 	// This is roughly equivalent to a dry run
-	readOnly = false // default to false
+	readOnly = true // default to false
 
 	PRTitlePrefix = "Update to latest commit of argo-rollouts-manager "
 )
 
 func main() {
 
-	pathToGitOpsOperatorGitRepo := "gitops-operator"
+	pathToGitOpsOperatorGitRepo := "/home/varshab/go/src/github.com/redhat-developer/gitops-operator"
 
 	// Checkout argo-rollouts-manager repo into a temporary directory
 	pathToRolloutsManagerGitRepo, err := checkoutRolloutsManagerRepoIntoTempDir()
@@ -52,7 +52,7 @@ func main() {
 
 	mostRecentCommitID := commitIds[0]
 
-	newBranchName := "upgrade-rollouts-manager"
+	newBranchName := "upgrade-rollouts-manager-v1.16"
 
 	// Create, commit, and push a new branch
 	if repoAlreadyUpToDate, err := createNewCommitAndBranch(mostRecentCommitID, newBranchName, pathToRolloutsManagerGitRepo, pathToGitOpsOperatorGitRepo); err != nil {
@@ -129,17 +129,17 @@ Update to most recent 'argo-rollouts-manager' commit: https://github.com/argopro
 // return true if the argo-rollouts-manager repo is already up to date
 func createNewCommitAndBranch(latestRolloutsManagerCommitId string, newBranchName, pathToArgoRolloutsManagerRepo string, pathToGitOpsOperatorGitRepo string) (bool, error) {
 
-	commands := [][]string{
-		{"git", "stash"},
-		{"git", "fetch", "parent"},
-		{"git", "checkout", "master"},
-		{"git", "reset", "--hard", "parent/master"},
-		{"git", "checkout", "-b", newBranchName},
-	}
+	// commands := [][]string{
+	// 	{"git", "stash"},
+	// 	{"git", "fetch", "upstream"},
+	// 	{"git", "checkout", "v1.16"},
+	// 	{"git", "reset", "--hard", "upstream/v1.16"},
+	// 	{"git", "checkout", newBranchName},
+	// }
 
-	if err := runCommandListWithWorkDir(pathToGitOpsOperatorGitRepo, commands); err != nil {
-		return false, err
-	}
+	// if err := runCommandListWithWorkDir(pathToGitOpsOperatorGitRepo, commands); err != nil {
+	// 	return false, err
+	// }
 
 	if goModGitCommit, err := extractCurrentRolloutsManagerGitCommitFromGoMod(pathToGitOpsOperatorGitRepo); err != nil {
 		return false, fmt.Errorf("unable to extract current target version from repo")
@@ -160,7 +160,7 @@ func createNewCommitAndBranch(latestRolloutsManagerCommitId string, newBranchNam
 		return false, fmt.Errorf("unable to copy rollouts CRDs: %w", err)
 	}
 
-	commands = [][]string{
+	commands := [][]string{
 		{"go", "mod", "tidy"},
 		{"make", "generate", "manifests"},
 		{"make", "bundle"},
@@ -174,7 +174,7 @@ func createNewCommitAndBranch(latestRolloutsManagerCommitId string, newBranchNam
 
 	if !readOnly {
 		commands = [][]string{
-			{"git", "push", "-f", "--set-upstream", "origin", newBranchName},
+			// {"git", "push", "-f", "--set-upstream", "origin", newBranchName},
 		}
 		if err := runCommandListWithWorkDir(pathToGitOpsOperatorGitRepo, commands); err != nil {
 			return false, err
